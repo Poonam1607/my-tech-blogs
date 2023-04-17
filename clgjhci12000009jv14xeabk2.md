@@ -1,6 +1,6 @@
 ---
 title: "OAM..azingly Naptivating: Unleashing the Power of OAM on the Napptive Platform""
-datePublished: Sun Apr 16 2023 14:05:57 GMT+0000 (Coordinated Universal Time)
+datePublished: Sun Apr 16 2023 05:12:40 GMT+0000 (Coordinated Universal Time)
 cuid: clgjhci12000009jv14xeabk2
 slug: oamazingly-naptivating-unleashing-the-power-of-oam-on-the-napptive-platform
 cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1681653810147/ad89ce08-90d1-427a-ac01-57b260070754.jpeg
@@ -17,7 +17,7 @@ Let me give you a glimpse of how cloud-native apps deploy and manage *traditiona
 1. ***We have to manually configure the servers required in our app setup:***  
     This involves setting up servers, installing dependencies, and deploying the application. This also includes configuring IP addresses, ports and database connections.
     
-    ![[resize output image]](https://im2.ezgif.com/tmp/ezgif-2-44e8e4944f.gif align="center")
+    ![drama fail GIF by BVG](https://media0.giphy.com/media/QWdOpow27HZ3jCUQOf/200w.gif?cid=ecf05e47qn2g8itgcj7lrf3cqdf2pbu1n30sq5mpbu835069&rid=200w.gif&ct=g align="center")
     
 2. ***Manual Scripting:***
     
@@ -28,7 +28,7 @@ Let me give you a glimpse of how cloud-native apps deploy and manage *traditiona
 
 Here OAM finally comes into the picture as a savior for the developers
 
-![[add-text output image]](https://im3.ezgif.com/tmp/ezgif-3-019eb1ac4c.gif align="center")
+![Spider Man Applause GIF](https://media3.giphy.com/media/3o7abrUyY8FHOpQELe/100.gif?cid=ecf05e476kugofk9i924b72wjzr4pgstjqnyyy4ms5btbrz0&rid=100.gif&ct=g align="center")
 
 ### Open Application Model OAM
 
@@ -101,7 +101,7 @@ Let's talk about the **<mark>features</mark>** which they are serving on our pla
     
 2. In the playground section, it has a drag-and-drop user interface, which allows you to easily build, configure, and deploy cloud-native application components.
     
-    ![[resize output image]](https://im3.ezgif.com/tmp/ezgif-3-3f586734a9.gif align="center")
+    ![Animation Loop GIF by Pierre-Julien Fieux](https://media1.giphy.com/media/igPKsfNkb9kXsRWSfF/200w.gif?cid=ecf05e47go3nxaqky9d6gurq21dln7m2x90p9v40u5hnhn29&rid=200w.gif&ct=g align="center")
     
     This feature is not available in other cloud-native platforms which is so cool and handy to use. I personally like it;)
     
@@ -119,7 +119,7 @@ Let's talk about the **<mark>features</mark>** which they are serving on our pla
 Overall, Napptive is a very powerful and easy-to-use cloud platform that allows you to easily deploy scalable and high-performance applications.  
 It can be a great choice for enterprises looking to modernize their applications and take advantage of the benefits of cloud computing.
 
-![[resize output image]](https://im2.ezgif.com/tmp/ezgif-2-a7d32c82d7.gif align="left")
+![usa network GIF by Suits](https://media0.giphy.com/media/5xtDaryfIKc7XxoEKEU/200w.gif?cid=ecf05e478f54h9vxeyo2da2b6wvd1v9r42d0fs65w0x506yd&rid=200w.gif&ct=g align="left")
 
 ---
 
