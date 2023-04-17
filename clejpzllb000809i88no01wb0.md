@@ -1,6 +1,6 @@
 ---
 title: "DevOps"
-datePublished: Sat Feb 25 2023 08:48:27 GMT+0000 (Coordinated Universal Time)
+datePublished: Sat Feb 25 2023 10:47:09 GMT+0000 (Coordinated Universal Time)
 cuid: clejpzllb000809i88no01wb0
 slug: devops
 cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1677313539547/9ce2be2b-ba43-4ca7-ba45-04a612221437.png
