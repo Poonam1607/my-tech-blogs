@@ -188,10 +188,6 @@ Let's start with step-by-step guidance:
      kubeadm token create --print-join-command
     ```
     
-    ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1682358458204/51b49476-b380-4253-86ba-9c208704e58a.png?auto=compress,format&format=webp align="left")
-    
-    ### Worker Node
-    
 9. Paste the generated token output in the Worker Node:
     
     ```bash
