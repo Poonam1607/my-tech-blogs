@@ -3,6 +3,7 @@ title: "Kubernetes: Architecture, Components, Installation & Configuration"
 datePublished: Mon Apr 24 2023 09:48:12 GMT+0000 (Coordinated Universal Time)
 cuid: clgw3462m00030alaglu76zyo
 slug: kubernetes-architecture-components-installation-configuration
+cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1682416445322/5b1f8021-d222-4760-9ce9-e2e6559d241e.png
 tags: kubernetes, kubernetes-architecture, trainwithshubham, kubeweek, kubeweekchallenge
 
 ---
@@ -136,7 +137,7 @@ Let's start with step-by-step guidance:
      sudo apt-get update
     ```
     
-2. For installing k8s, first you have to Install Docker:
+2. Pre-requisite for installing k8s: Docker
     
     ```bash
      sudo apt install docker.io -y
@@ -144,19 +145,19 @@ Let's start with step-by-step guidance:
      sudo systemctl enable docker
     ```
     
-3. Install the necessary packages for Kubernetes:
+3. Install all the necessary packages for k8s:
     
     ```bash
      sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
     ```
     
-4. Add the Kubernetes signing key:
+4. Now, add the Kubernetes signing key:
     
     ```bash
      echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
     ```
     
-5. Update the system and install Kubernetes:
+5. Update the system and install k8s:
     
     ```bash
      sudo apt update -y
