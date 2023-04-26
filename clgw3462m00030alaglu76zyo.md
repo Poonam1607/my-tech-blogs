@@ -4,6 +4,7 @@ datePublished: Mon Apr 24 2023 09:48:12 GMT+0000 (Coordinated Universal Time)
 cuid: clgw3462m00030alaglu76zyo
 slug: kubernetes-architecture-components-installation-configuration
 cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1682416445322/5b1f8021-d222-4760-9ce9-e2e6559d241e.png
+ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1682520494517/c0b10b1a-9710-4d9f-b317-fba72566c913.png
 tags: kubernetes, kubernetes-architecture, trainwithshubham, kubeweek, kubeweekchallenge
 
 ---
