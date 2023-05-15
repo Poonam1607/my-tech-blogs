@@ -41,6 +41,10 @@ It can be two aspects of the features to use Hashnode. Let's see what are they.
     
 * **Publish on a back-date (Time Travelling)** - On Hashnode, you have the ability to publish an article with a back-date, which is like time-traveling to a past date. This is a useful feature when you're on a tight deadline and need to meet a publishing schedule."
     
+* **Custom Domains** - If you see my blogging URL looks like this [`yourblog.hashnode.dev`](http://yourblog.hashnode.dev) by default but you can upgrade your domain by giving the **domain** name of your **personal** choice to make it more professional which can help you to build your brand.
+    
+    [`yourblog.hashnode.dev`](http://yourblog.hashnode.dev) , to [`blog.your-domain.com`](http://blog.your-domain.com)`.`
+    
 
 ### Reader's perspective👀
 
@@ -98,11 +102,7 @@ Ok, I talked a lot! But trust me I don't😶. Moving forward,
     
 2. **Advanced Analytics** - You can keep an eye on the details of **traffic** coming, page **views**, bounce **rates** and many more which helps you to speed up your blogging game and grow your audience accordingly.
     
-3. **Custom Domains** - With the standard version your blogging URL looks like this [`yourblog.hashnode.dev`](http://yourblog.hashnode.dev) but with the pro version you can give the **domain** name of your **personal** choice to make it more professional which can help you to build your brand.
-    
-    [`yourblog.hashnode.dev`](http://yourblog.hashnode.dev) , to [`blog.your-domain.com`](http://blog.your-domain.com)`.`
-    
-4. **Custom Logos** - You can customize your blog's logo for branding and make it more unique from others which will give a distinct identity to your blog.
+3. **Custom Logos** - You can customize your blog's logo for branding and make it more unique from others which will give a distinct identity to your blog.
     
 
 And many more, which I will be covering in my experience part. Moving forward to it.
