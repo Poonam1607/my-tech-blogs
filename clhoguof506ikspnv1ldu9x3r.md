@@ -41,7 +41,7 @@ It can be two aspects of the features to use Hashnode. Let's see what are they.
     
 * **Publish on a back-date (Time Travelling)** - On Hashnode, you have the ability to publish an article with a back-date, which is like time-traveling to a past date. This is a useful feature when you're on a tight deadline and need to meet a publishing schedule."
     
-* **Custom Domains** - If you see my blogging URL looks like this [`yourblog.hashnode.dev`](http://yourblog.hashnode.dev) by default but you can upgrade your domain by giving the **domain** name of your **personal** choice to make it more professional which can help you to build your brand.
+* **Custom Domains** - If you see my blogging URL looks like this [`myblog.hashnode.dev`](http://yourblog.hashnode.dev) by default but you can upgrade your domain by giving the **domain** name of your **personal** choice to make it more professional which can help you to build your brand.
     
     [`yourblog.hashnode.dev`](http://yourblog.hashnode.dev) , to [`blog.your-domain.com`](http://blog.your-domain.com)`.`
     
