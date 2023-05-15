@@ -3,7 +3,7 @@ title: "Experience with Hashnode AI tools"
 datePublished: Mon May 15 2023 06:30:39 GMT+0000 (Coordinated Universal Time)
 cuid: clhoguof506ikspnv1ldu9x3r
 slug: experience-with-hashnode-ai-tools
-cover: https://cdn.hashnode.com/res/hashnode/image/stock/unsplash/3GZNPBLImWc/upload/59835c7eb1be26bed34b63ef3542c568.jpeg
+cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1684150429189/44f6fef5-c6a6-4ce7-aec8-8b2b64f829e2.jpeg
 ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1684067529523/fb17a943-6ce0-4e22-8172-f3a14e920b4a.png
 tags: hashnode, ai-tools, wemakedevs, hashnode-ai
 
