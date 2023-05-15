@@ -65,7 +65,7 @@ So as a consistent writer on this platform, I must say that my experience has be
 
 ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1684063775428/6c83293a-3e6e-416d-acf3-ee47064472f0.gif align="left")
 
-The next thing which I want to mention is whenever I write, I find myself deleting and rewriting phrases multiple times. However, when I'm done writing and previewing my work, I often end up preferring the previous version. That's why the revision history feature🔄 is the one I use frequently while working on blogs.
+The next thing I want to mention is whenever I write, I find myself deleting and rewriting phrases multiple times. However, when I'm done writing and previewing my work, I often end up preferring the previous version. That's why the revision history feature🔄 is the one I use frequently while working on blogs.
 
 ### Rix: A Treasure Trove of Knowledge💠
 
@@ -84,7 +84,7 @@ The next thing which I want to mention is whenever I write, I find myself deleti
 
 ## Hashnode Pro🫅
 
-Everything was going great until I came across the introduction to **Hanshnode 2.0** ie **Hashnode's Pro** version. I usually don't purchase the pro subscriptions of any unless they have some mind-blasting features to serve.
+Everything was going great until I came across the introduction to **Hashnode 2.0** ie **Hashnode's Pro** version. I usually don't purchase the pro subscriptions of any unless they have some mind-blasting features to serve.
 
 I had been hearing a lot about the new **AI features** that come in the **Pro package**. But how do I believe without trying it once🤔? So I drop the idea of purchasing it. But then, I discovered that they are offering **free trials** which made me reconsider.
 
