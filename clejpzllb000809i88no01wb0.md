@@ -121,6 +121,10 @@ resource: [https://kubernetes.io/](https://kubernetes.io/)
 sudo apt update sudo apt install software-properties-common sudo add-apt-repository --yes --update ppa:ansible/ansible sudo apt install ansible
 ```
 
+To master the configuration management tools like Ansible, check out this amazing article packed with a complete tutorial from zero to hero knowledge in it by [**Ioannis Moustakis**](https://spacelift.io/blog/author/ionannism)
+
+%[https://spacelift.io/blog/ansible-tutorial] 
+
 **Step 8: Provisioning cloud resources with Terraform**
 
 > Discover how to define, provision and manage infrastructure with Terraform, a popular tool for infrastructure as code.
