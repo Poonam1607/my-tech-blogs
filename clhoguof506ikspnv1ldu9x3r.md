@@ -86,7 +86,7 @@ The next thing I want to mention is whenever I write, I find myself deleting and
 * If you're a regular **ChatGPT** user, you'll totally get what I'm saying. Like, when you keep asking a bunch of questions one after another in GPT, it sometimes **stops** giving answers and tells you to chill for a bit before asking again.
     
 
-## Hashnode Pro🫅
+## Hashnode Pro💝
 
 Everything was going great until I came across the introduction to **Hashnode 2.0** ie **Hashnode's Pro** version. I usually don't purchase the pro subscriptions of any unless they have some mind-blasting features to serve.
 
