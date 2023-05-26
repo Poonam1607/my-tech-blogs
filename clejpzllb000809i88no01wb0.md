@@ -123,7 +123,7 @@ sudo apt update sudo apt install software-properties-common sudo add-apt-reposit
 
 To master the configuration management tools like Ansible, check out this amazing article packed with a complete tutorial from zero to hero knowledge in it by [**Ioannis Moustakis**](https://spacelift.io/blog/author/ionannism)
 
-%[https://spacelift.io/blog/ansible-tutorial] 
+[![](https://cdn.hashnode.com/res/hashnode/image/upload/v1685086280413/4db6d1fd-11b3-4383-9f35-1adda5f1cfcc.png align="center")](https://spacelift.io/blog/ansible-tutorial)
 
 **Step 8: Provisioning cloud resources with Terraform**
 
