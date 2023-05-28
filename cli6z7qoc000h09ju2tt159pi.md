@@ -4,6 +4,7 @@ datePublished: Sun May 28 2023 05:24:32 GMT+0000 (Coordinated Universal Time)
 cuid: cli6z7qoc000h09ju2tt159pi
 slug: aws-project-using-shell-scripting-for-devops
 cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1685251401232/4fad1b9b-8f9e-413a-a185-f13448ef1e02.png
+ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1685269829791/0d4f76a0-b4fc-42ca-b1ce-311cdd30525c.png
 tags: aws, devops, shell-script, wemakedevs
 
 ---
@@ -165,6 +166,8 @@ Make sure that the script is executable (`chmod +x /path/to/your/script.sh`) and
     
 
 Overall, this script simplifies the process of gathering information about AWS resources, enhances visibility into your infrastructure, and supports effective management and monitoring of your DevOps environment.
+
+*Github link:* [*https://github.com/Poonam1607/shell-scripting-projects*](https://github.com/Poonam1607/shell-scripting-projects)
 
 > Resource: For better understanding and visual learning you can check out this tutorial - [https://youtu.be/gx5E47R9fGk](https://youtu.be/gx5E47R9fGk)
 
