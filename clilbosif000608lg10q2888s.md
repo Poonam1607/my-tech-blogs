@@ -259,3 +259,90 @@ You will get the output like this.
     
 
 ### Congratulations!🎉 You have made your first terraform configuration.👍
+
+## Important Terminologies in Terraform
+
+Important terminologies in Terraform along with examples:
+
+1. Resource:
+    
+    * A resource represents an infrastructure component that Terraform manages, such as an AWS EC2 instance, an Azure virtual machine, or a Google Cloud Storage bucket.
+        
+    * Example:
+        
+        ```bash
+        resource "aws_instance" "example" {
+          ami           = "ami-0123456789"
+          instance_type = "t2.micro"
+        }
+        ```
+        
+        In this example, the resource type is "aws\_instance" representing an EC2 instance, and the resource label is "example".
+        
+2. Provider:
+    
+    * A provider is responsible for managing and interacting with a specific infrastructure platform or service, such as AWS, Azure, or Google Cloud Platform.
+        
+    * Example:
+        
+        ```bash
+        provider "aws" {
+          region = "us-west-2"
+        }
+        ```
+        
+        This example configures the AWS provider with the specified region.
+        
+3. Variable:
+    
+    * A variable allows you to parameterize your Terraform configuration and provide flexibility. Variables can be defined to accept different values based on the environment or specific requirements.
+        
+    * Example:
+        
+        ```bash
+        variable "instance_count" {
+          description = "Number of EC2 instances"
+          default     = 1
+        }
+        ```
+        
+        This example defines a variable named "instance\_count" with a default value of 1.
+        
+4. Output:
+    
+    * An output allows you to define values that are exposed to the user once the Terraform configuration is applied. Outputs are typically used to display information or provide data to other systems.
+        
+    * Example:
+        
+        ```bash
+        output "instance_ip" {
+          value       = aws_instance.example.private_ip
+          description = "Private IP address of the EC2 instance"
+        }
+        ```
+        
+        This example defines an output named "instance\_ip" that retrieves the private IP address of the "aws\_instance" resource.
+        
+5. Module:
+    
+    * A module is a self-contained and reusable Terraform configuration that encapsulates a set of resources and their dependencies. Modules promote code reusability, and modularity, and help organize complex configurations.
+        
+    * Example:
+        
+        ```bash
+        module "vpc" {
+          source = "./vpc"
+          region = "us-west-2"
+        }
+        ```
+        
+        In this example, a module named "vpc" is instantiated using the configuration defined in the "./vpc" directory.
+        
+
+These terminologies are fundamental to understanding and working with Terraform. They provide the building blocks for defining and managing infrastructure-as-code configurations in a flexible and scalable manner.
+
+If you are not getting the examples than don't worry we will understand all of these things in the upcomping blogs. I have given examples just for the sake of explanation.
+
+---
+
+Thank you🖤!
