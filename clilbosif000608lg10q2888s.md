@@ -341,7 +341,7 @@ Important terminologies in Terraform along with examples:
 
 These terminologies are fundamental to understanding and working with Terraform. They provide the building blocks for defining and managing infrastructure-as-code configurations in a flexible and scalable manner.
 
-If you are not getting the examples than don't worry we will understand all of these things in the upcomping blogs. I have given examples just for the sake of explanation.
+If you are not getting the examples than don't worry we will understand all of these things in the upcoming blogs. I have given examples just for the sake of explanation.
 
 ---
 
