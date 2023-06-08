@@ -345,4 +345,6 @@ If you are not getting the examples than don't worry we will understand all of t
 
 ---
 
+This is a part of the 7-day TerraWeek Challenge initiated by @[Shubham Londhe](@TrainWithShubham) sir.
+
 Thank you🖤!
