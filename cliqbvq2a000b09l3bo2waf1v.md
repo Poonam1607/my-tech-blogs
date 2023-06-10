@@ -147,7 +147,7 @@ resource "azurerm_virtual_network" "example" {
 }
 ```
 
-### GCP Provider
+## GCP Provider
 
 Moving on to Google Cloud Platform.
 
@@ -164,7 +164,7 @@ provider "google" {
 }
 ```
 
-### Digital Ocean Provider
+## Digital Ocean Provider
 
 Lastly, we have **Digital Ocean**'s Terraform provider,
 
