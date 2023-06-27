@@ -4,8 +4,8 @@ datePublished: Wed Jun 07 2023 06:22:30 GMT+0000 (Coordinated Universal Time)
 cuid: clilbosif000608lg10q2888s
 slug: introduction-to-terraform
 cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1686113067205/972f4d37-0270-4aba-b875-17be5e0a8718.png
-ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1686118929859/9b94c1c3-645b-44f4-83ce-e4e577b00098.png
-tags: devops, terraform, terraweek, terraweekchallenge, tws-terraform-challenge
+ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1687846191504/2971e9e4-cf40-4c6b-9bbe-5459b5ba6874.png
+tags: devops, terraform, devops-tools, wemakedevs, terraweek
 
 ---
 
@@ -341,10 +341,8 @@ Important terminologies in Terraform along with examples:
 
 These terminologies are fundamental to understanding and working with Terraform. They provide the building blocks for defining and managing infrastructure-as-code configurations in a flexible and scalable manner.
 
-If you are not getting the examples than don't worry we will understand all of these things in the upcoming blogs. I have given examples just for the sake of explanation.
+If you are not getting the examples then don't worry we will understand all of these things in the upcoming blogs. I have given examples just for the sake of explanation.
 
 ---
-
-This is a part of the 7-day TerraWeek Challenge initiated by @[Shubham Londhe](@TrainWithShubham) sir.
 
 Thank you🖤!
