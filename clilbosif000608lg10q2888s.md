@@ -21,6 +21,8 @@ So let's go back in time and see how **continuous delivery** works as a traditio
 
 ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1686112010108/3b762b33-450d-49c9-98f4-313f5143c050.png align="center")
 
+*(pics credit: kodekloud)*
+
 Different teams do different jobs. Like, a **business analyst** gathers the whole requirements by analyzing them. Then with the given requirements, the **solution architects** design the architecture of the deployment process of the application. All the hardware requirements need to be ordered way before months. And to reach these in the data center takes months. Then every process of **installation**, **configuration**, and **allotting storage** takes place.
 
 This traditional process takes a lot of time to deliver the application. This model has many **disadvantages** in itself like,
