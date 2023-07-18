@@ -1,5 +1,5 @@
 ---
-title: "Linux - The HULK of DevOps"
+title: "Linux - The HULK of DevOps🏋‍♂️"
 datePublished: Sun Jul 16 2023 18:06:17 GMT+0000 (Coordinated Universal Time)
 cuid: clk76gctc00020aldfpc56ity
 slug: linux-the-hulk-of-devops
