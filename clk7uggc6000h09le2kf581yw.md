@@ -1,5 +1,5 @@
 ---
-title: "Diving deeper in basic Linux"
+title: "Diving deeper in basic Linux🏊‍♀️"
 datePublished: Mon Jul 17 2023 05:18:16 GMT+0000 (Coordinated Universal Time)
 cuid: clk7uggc6000h09le2kf581yw
 slug: diving-deeper-in-basic-linux
