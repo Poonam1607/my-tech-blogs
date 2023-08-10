@@ -39,22 +39,22 @@ Networking in k8s is such a crucial topic to understand and a must for working i
 * A simple **yaml** pod file:
     
 * ```yaml
-        apiVersion: v1
-        kind: Pod
-        metadata:
-          name: demo-pod
-        spec:
-          containers:
-          - name: demo-container
-            image: nginx
-            ports:
-            - containerPort: 80
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: demo-pod
+          spec:
+            containers:
+            - name: demo-container
+              image: nginx
+              ports:
+              - containerPort: 80
     ```
     
 * Then run the `kubectl apply` command once you have created the **YAML** file to deploy it in the Kubernetes cluster with the necessary file name you have given.
     
 * ```bash
-        kubectl apply -f demo-pod.yaml
+          kubectl apply -f demo-pod.yaml
     ```
     
     This is how you can start creating PODs.
@@ -207,7 +207,7 @@ kubectl create -f myservice.yaml
 
 This is how you can create your service of NodePort type. By changing the `spec` `type` to `ClusterIP` or `LoadBalancer`, whatever you wish to work with just change it with the name and port according to it.
 
-## CNI (Computer Network Interface)🌐
+## CNI (Container Network Interface)🌐
 
 * CNI is a set of **standards** that defines how to **configure** networking challenges in a container runtime environment like Docker and Kubernetes.
     
@@ -226,7 +226,7 @@ This is how you can create your service of NodePort type. By changing the `spec`
 * But you can do it **manually** by creating a docker container without any network configuration
     
 * ```bash
-        docker run --network=none nginx
+          docker run --network=none nginx
     ```
     
 * then invoke the bridge plugin by yourself.
@@ -241,7 +241,7 @@ This is how you can create your service of NodePort type. By changing the `spec`
 * You can see the network plugins set to CNI by running the below command
     
 * ```bash
-        ps -aux | grep kubelet
+          ps -aux | grep kubelet
     ```
     
 * The CNI plugin is configured in the kubelet service on each node in the cluster
@@ -249,7 +249,7 @@ This is how you can create your service of NodePort type. By changing the `spec`
 * The CNI bin directory has all the supported CNI plugins as executables.
     
 * ```bash
-        ls /opt/cni/bin
+          ls /opt/cni/bin
     ```
     
 * k8s supports various CNI plugins like **Calico**, **Weave** **Net**, **Flannel**, **DHCP** and many more.
@@ -257,7 +257,7 @@ This is how you can create your service of NodePort type. By changing the `spec`
 * You can identify which plugin is currently used with the help of this command
     
 * ```bash
-        ls /etc/cni/net.d
+          ls /etc/cni/net.d
     ```
     
 * kubelet finds out which plugin will be used.
@@ -274,7 +274,7 @@ This is how you can create your service of NodePort type. By changing the `spec`
 * Every new entry of a pod goes into the DNS server record by
     
 * ```bash
-        cat >> /etc/resolv.conf
+          cat >> /etc/resolv.conf
     ```
     
 * The k8s DNS keeps the record of the created services and maps the service name to the IP address. So anyone can reach by the service name itself.
@@ -286,7 +286,7 @@ This is how you can create your service of NodePort type. By changing the `spec`
 * To look for DNS Pods, run the command
     
 * ```bash
-        kubectl get pods -n kube-system
+          kubectl get pods -n kube-system
     ```
     
 
@@ -330,30 +330,30 @@ This is how you can create your service of NodePort type. By changing the `spec`
 * A simple **ingress** **yaml** **file** for the sake of explanation:
     
 * ```yaml
-        apiVersion: networking.k8s.io/v1
-        kind: Ingress
-        metadata:
-          name: minimal-ingress
-          annotations
-            nginx.ingress.kubernetes.io/rewrite-target: /
-        spec:
-          ingressClassName: nginx-example
-          rules:
-          - http:
-              paths:
-              - path: /testpath
-                pathType: Prefix
-                backend:
-                  service:
-                    name: test
-                    port:
-                      number: 80
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          metadata:
+            name: minimal-ingress
+            annotations
+              nginx.ingress.kubernetes.io/rewrite-target: /
+          spec:
+            ingressClassName: nginx-example
+            rules:
+            - http:
+                paths:
+                - path: /testpath
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: test
+                      port:
+                        number: 80
     ```
     
 * **Create a single ingress called 'simple' that directs requests to** [**foo.com/bar**](http://foo.com/bar) **to svc # svc1:8080 with a tls secret "my-cert"**
     
 * ```yaml
-        kubectl create ingress simple --rule="foo.com/bar=svc1:8080,tls=my-cert"
+          kubectl create ingress simple --rule="foo.com/bar=svc1:8080,tls=my-cert"
     ```
     
     This is how you can start working with Ingress in Kubernetes.
