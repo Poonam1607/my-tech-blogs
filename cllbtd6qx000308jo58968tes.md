@@ -3,6 +3,7 @@ title: "$ kubectl get cluster  -o architecture"
 datePublished: Tue Aug 15 2023 04:38:47 GMT+0000 (Coordinated Universal Time)
 cuid: cllbtd6qx000308jo58968tes
 slug: kubectl-get-cluster-o-architecture
+cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1692076942696/fbf1d430-6c30-4e97-82b3-58e34ec2f77b.webp
 tags: docker, kubernetes, architecture, components, containers
 
 ---
