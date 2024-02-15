@@ -1,37 +1,54 @@
 ---
-title: "SigNoz - A complete setup tour"
+title: "SigNoz - A complete setup tour with Logs"
 datePublished: Mon Feb 12 2024 08:06:30 GMT+0000 (Coordinated Universal Time)
 cuid: clsinhi37000208jq3eu27dp9
-slug: signoz-a-complete-setup-tour
-cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1707724705740/ddf3249e-ea76-42c0-a6a6-9a289adcbf6e.png
+slug: signoz-a-complete-setup-tour-with-logs
+cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1708003533812/baa666c1-cfcd-4ad6-8083-3efd07d34e88.png
 ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1707725159302/82d144e2-ca1e-4a9e-998d-bf249801e3a9.png
 tags: opensource, monitoring, logging, signoz, monitoring-tool
 
 ---
 
-In this blog we will be going on hands-on journey, setting up Docker log collections and host metrics collections for enhanced monitoring.
+## Overview
+
+In this blog we will be going on hands-on journey, setting up Docker logs collection for enhanced monitoring.
+
+Let's see the SigNoz architecture first
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1707981176089/a68bc17b-1b8d-410c-b79d-5fe35490a862.png align="center")
+
+* **OpenTelemetry Collector**: Collects telemetry (logs and metrics) data from our services and applications.
+    
+* **ClickHouse**: It's an open-source, high performance columnar OLAP database management system.
+    
+* **Query Service**: This is the interface between the front-end and ClickHouse built in Go language.
+    
+* **Frontend**: The user interface, built in ReactJS and TypeScript.
+    
 
 ## Architecture
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1707725062283/257b8323-d3bc-4f5b-b165-6b651fe0f6f5.png align="center")
+End-to-end flow for logs configuration.
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1707996467937/e22d0e11-f476-4f5f-8389-c90a2e2473ae.png align="center")
 
 **Source** - An application hosted on an AWS EC2 instance.
 
 **Destination** - SigNoz, operational on a separate EC2 instance.
 
-**Path** - We'll extract Docker logs and host metrics from the application, forwarding them to the SigNoz OpenTelemetry (otel) collector, ultimately visualizing the logs within the SigNoz dashboard.
+**Path** - We'll extract Docker logs from the application, forwarding them to the SigNoz OpenTelemetry (OTel) collector, ultimately visualising the logs within the SigNoz dashboard.
 
-## Source Setup
+## Application Setup
 
 ***AWS EC2 Instance -&gt; Dockerised Application -&gt; Log Collector***
 
-Ensure your **Dockerized** application is up and running. For demonstration purposes, we'll employ a sample application generating continuous random logs.
+Ensure your **Dockerised** application is up and running. For demonstration purposes, we'll employ a sample application generating continuous random logs.
 
 ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1707722139121/8969ef43-ee41-4c93-9fce-79c00e4c669f.png align="center")
 
 As we can see, the application is generating a stream of random logs.
 
-## Destination Setup
+## SigNoz Setup
 
 Let's configure SigNoz now.
 
@@ -47,14 +64,217 @@ Let's configure SigNoz now.
     
     ```plaintext
     $ git clone -b main https://github.com/SigNoz/signoz.git && cd signoz/deploy/
+    ```
+    
+    If we look closely to the signoz architecture, we can see there are a lot of services running on it.
+    
+6. Don't run docker-compose up for now. First et's break down every service so that we can remove the unwanted ones.
+    
+    ```plaintext
     $ docker compose -f docker/clickhouse-setup/docker-compose.yaml up -d
     $ docker ps
     ```
     
-6. With just two commands, SigNoz is **up** and **running**. We can access the dashboard at `http://<IP-ADDRESS>:3301/`.
+    ```plaintext
+    CONTAINER ID   IMAGE
+    01f044c4686a   signoz/frontend:0.38.2
+    86aa5b875f9f   gliderlabs/logspout:v3.2.14 
+    58746f684630   signoz/alertmanager:0.23.4
+    2cf1ec96bdb3   signoz/query-service:0.38.2
+    e9f0aa66d884   signoz/signoz-otel-collector:0.88.11
+    d3d89d7d4581   clickhouse/clickhouse-server:23.11.1-alpine
+    9db88aefb6ed   signoz/locust:1.2.3
+    60bb3b77b4f7   bitnami/zookeeper:3.7.1
+    98c7178b4004   jaegertracing/example-hotrod:1.30
+    ```
+    
+    I have simplified the details for the sake of better vision.  
+      
+    a. signoz/frontend - It serves the user interface accessible via a web browser. So this is necessary.  
+      
+    b. gliderlabs/logspout - This is image takes docker logs and forward to desired destination. In signoz setup, we don't need the signoz logs to be seen in the dashboard, so we can remove this. (You can use if you want)  
+      
+    c. signoz/alertmanager - It handles alerts sent by Prometheus servers and manages their routing and grouping. For now we're not configuring alerts so e're going to remove this.  
+      
+    d. signoz/query-service - It handles incoming queries from users and retrieves relevant data from the underlying data storage.  
+      
+    e. signoz/signoz-otel-collector - This container hosts the OpenTelemetry collector, which collects, processes, and exports telemetry data to Signoz.  
+      
+    f. clickhouse/clickhouse-server - This container runs ClickHouse, an open-source column-oriented database management system. It provides storage and querying capabilities for the monitoring data collected by Signoz.  
+      
+    g. signoz/locust - Locust is commonly used for performance testing, stress testing, and load testing web applications and APIs. We're going to remove this.
+    
+      
+    h. bitnami/zookeeper - It is commonly used for distributed systems and coordination.  
+      
+    i. jaegertracing/example-hotrod - They have added a sample application for demo purpose. We're going to remove this also as we have our own application running.
+    
+7. With just two commands, SigNoz is **up** and **running**. We can access the dashboard at `http://<IP-ADDRESS>:3301/`.
     
 
-## Logs Setup
+After removing services, our docker-compose file something look like this.
+
+```plaintext
+version: "2.4"
+
+x-clickhouse-defaults: &clickhouse-defaults
+  restart: on-failure
+  image: clickhouse/clickhouse-server:24.1.2-alpine
+  tty: true
+  depends_on:
+    - zookeeper-1
+  logging:
+    options:
+      max-size: 50m
+      max-file: "3"
+  healthcheck:
+    # "clickhouse", "client", "-u ${CLICKHOUSE_USER}", "--password ${CLICKHOUSE_PASSWORD}", "-q 'SELECT 1'"
+    test:
+      [
+        "CMD",
+        "wget",
+        "--spider",
+        "-q",
+        "localhost:8123/ping"
+      ]
+    interval: 30s
+    timeout: 5s
+    retries: 3
+  ulimits:
+    nproc: 65535
+    nofile:
+      soft: 262144
+      hard: 262144
+
+x-db-depend: &db-depend
+  depends_on:
+    clickhouse:
+      condition: service_healthy
+    otel-collector-migrator:
+      condition: service_completed_successfully
+
+services:
+
+  zookeeper-1:
+    image: bitnami/zookeeper:3.7.1
+    container_name: signoz-zookeeper-1
+    hostname: zookeeper-1
+    user: root
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    volumes:
+      - ./data/zookeeper-1:/bitnami/zookeeper
+    environment:
+      - ZOO_SERVER_ID=1
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOO_AUTOPURGE_INTERVAL=1
+
+  clickhouse:
+    <<: *clickhouse-defaults
+    container_name: signoz-clickhouse
+    hostname: clickhouse
+    ports:
+      - "9000:9000"
+      - "8123:8123"
+      - "9181:9181"
+    volumes:
+      - ./clickhouse-config.xml:/etc/clickhouse-server/config.xml
+      - ./clickhouse-users.xml:/etc/clickhouse-server/users.xml
+      - ./custom-function.xml:/etc/clickhouse-server/custom-function.xml
+      - ./clickhouse-cluster.xml:/etc/clickhouse-server/config.d/cluster.xml
+      - ./data/clickhouse/:/var/lib/clickhouse/
+      - ./user_scripts:/var/lib/clickhouse/user_scripts/
+
+  query-service:
+    image: signoz/query-service:${DOCKER_TAG:-0.38.0}
+    container_name: signoz-query-service
+    command:
+      [
+        "-config=/root/config/prometheus.yml",
+      ]
+    volumes:
+      - ./prometheus.yml:/root/config/prometheus.yml
+      - ../dashboards:/root/config/dashboards
+      - ./data/signoz/:/var/lib/signoz/
+    environment:
+      - ClickHouseUrl=tcp://clickhouse:9000/?database=signoz_traces
+      - SIGNOZ_LOCAL_DB_PATH=/var/lib/signoz/signoz.db
+      - DASHBOARDS_PATH=/root/config/dashboards
+      - STORAGE=clickhouse
+      - GODEBUG=netdns=go
+      - TELEMETRY_ENABLED=true
+      - DEPLOYMENT_TYPE=docker-standalone-amd
+    restart: on-failure
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--spider",
+          "-q",
+          "localhost:8080/api/v1/health"
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    <<: *db-depend
+
+  frontend:
+    image: signoz/frontend:${DOCKER_TAG:-0.38.0}
+    container_name: signoz-frontend
+    restart: on-failure
+    depends_on:
+      - query-service
+    ports:
+      - "3301:3301"
+    volumes:
+      - ../common/nginx-config.conf:/etc/nginx/conf.d/default.conf
+
+  otel-collector-migrator:
+    image: signoz/signoz-schema-migrator:${OTELCOL_TAG:-0.88.9}
+    container_name: otel-migrator
+    command:
+      - "--dsn=tcp://clickhouse:9000"
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+
+  otel-collector:
+    image: signoz/signoz-otel-collector:${OTELCOL_TAG:-0.88.9}
+    container_name: signoz-otel-collector
+    command:
+      [
+        "--config=/etc/otel-collector-config.yaml",
+        "--manager-config=/etc/manager-config.yaml",
+        "--copy-path=/var/tmp/collector-config.yaml",
+        "--feature-gates=-pkg.translator.prometheus.NormalizeName"
+      ]
+    user: root # required for reading docker container logs
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+      - ./otel-collector-opamp-config.yaml:/etc/manager-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    environment:
+      - OTEL_RESOURCE_ATTRIBUTES=host.name=signoz-host,os.type=linux
+      - DOCKER_MULTI_NODE_CLUSTER=false
+      - LOW_CARDINAL_EXCEPTION_GROUPING=false
+    ports:
+      - "2255:2255"     # pprof extension
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP HTTP receiver
+    restart: on-failure
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+      otel-collector-migrator:
+        condition: service_completed_successfully
+      query-service:
+        condition: service_healthy
+```
+
+## Logs Configuration
 
 ### SigNoz Part
 
@@ -104,55 +324,7 @@ We are getting some logs in the Logs section. Click on logs detail icon.
 
 We can see our application's details here.
 
-## Metrics Setup
-
-### SigNoz Part
-
-In SigNoz document, they have a `JSON` format file that will create a pre-built dashboard.
-
-Copy the below code or you can download it from [here](https://github.com/SigNoz/dashboards/blob/main/hostmetrics/hostmetrics-with-variable.json).
-
-```plaintext
-{ "description": "", "layout": [ { "h": 2, "i": "959dab82-07ef-45fb-8889-9c79b0a5735d", "moved": false, "static": false, "w": 6, "x": 6, "y": 2 }, { "h": 2, "i": "84adebba-baf9-455a-b742-b0c23c27a6cc", "moved": false, "static": false, "w": 3, "x": 0, "y": 4 }, { "h": 2, "i": "115b6abf-eaa5-4d89-a117-abefb755a8aa", "moved": false, "static": false, "w": 3, "x": 6, "y": 4 }, { "h": 2, "i": "7ac947df-7394-4dcb-9fe0-05ee45f23794", "moved": false, "static": false, "w": 3, "x": 9, "y": 4 }, { "h": 2, "i": "c99de411-fcf6-475c-a246-f8ac3e2f2b10", "moved": false, "static": false, "w": 3, "x": 3, "y": 4 }, { "h": 2, "i": "18fa7157-0081-4348-b633-26cfe65ccba8", "moved": false, "static": false, "w": 6, "x": 0, "y": 10 }, { "h": 2, "i": "e55a1b9c-dfb1-4b5a-b203-f1966a3a0cc5", "moved": false, "static": false, "w": 6, "x": 6, "y": 10 }, { "h": 2, "i": "13031601-b6d4-47c8-ab81-b64c28b8defd", "moved": false, "static": false, "w": 6, "x": 6, "y": 12 }, { "h": 2, "i": "7643eb3f-2dd6-4a21-803e-516e853f92e3", "moved": false, "static": false, "w": 6, "x": 0, "y": 12 }, { "h": 2, "i": "fb03ba5a-adb4-42fd-a082-adec2af1770e", "moved": false, "static": false, "w": 6, "x": 0, "y": 6 }, { "h": 2, "i": "bfd7825c-c9bc-4e7b-891b-1225eece07d8", "moved": false, "static": false, "w": 6, "x": 6, "y": 14 }, { "h": 2, "i": "ba153238-e3b2-4107-adb0-03c1ae1af905", "moved": false, "static": false, "w": 6, "x": 0, "y": 14 }, { "h": 2, "i": "d52bf781-af94-4a7e-b70d-816522065801", "moved": false, "static": false, "w": 6, "x": 0, "y": 16 }, { "h": 2, "i": "ea994cb5-a911-4d49-8d60-440b66e78c2f", "moved": false, "static": false, "w": 2, "x": 0, "y": 0 }, { "h": 2, "i": "b9459168-fe63-4c58-b6a9-4d47accfa8ea", "moved": false, "static": false, "w": 6, "x": 6, "y": 6 }, { "h": 2, "i": "315f1b8d-4ca4-4795-9335-42190bd1ab57", "moved": false, "static": false, "w": 2, "x": 8, "y": 0 }, { "h": 2, "i": "a762f563-81a2-41a7-b85e-d9e8d5b8cac9", "moved": false, "static": false, "w": 3, "x": 2, "y": 0 }, { "h": 2, "i": "9da0e5b3-5a56-4619-92ce-2b43fb9af844", "moved": false, "static": false, "w": 3, "x": 5, "y": 0 }, { "h": 2, "i": "0d371069-67b9-49e5-8a73-a55568390f81", "moved": false, "static": false, "w": 3, "x": 0, "y": 2 }, { "h": 2, "i": "1d79cd03-e79d-44e4-9016-6396b7d3ab26", "moved": false, "static": false, "w": 3, "x": 3, "y": 2 }, { "h": 2, "i": "96529349-b3fb-481f-82db-75e75cf20af1", "moved": false, "static": false, "w": 6, "x": 0, "y": 8 }, { "h": 2, "i": "69bad098-ea78-46a1-81b2-6eb7b54b9b75", "moved": false, "static": false, "w": 6, "x": 6, "y": 8 }, { "h": 2, "i": "b637ca7e-a03a-4b49-9344-6406ee66d313", "moved": false, "static": false, "w": 2, "x": 10, "y": 0 }, { "h": 2, "i": "16ddaf59-bad7-4559-96c2-c8c3eb4f9cd9", "moved": false, "static": false, "w": 6, "x": 6, "y": 16 } ], "name": "", "tags": ["hostmetrics", "signoz"], "title": "HostMetrics Dashboard - SigNoz", "variables": { "hostname": { "customValue": "", "description": "Hostname of the instance", "modificationUUID": "f8ed0d75-f0e7-4c82-978e-22bfe98a5c2b", "multiSelect": false, "name": "hostname", "queryValue": "SELECT DISTINCT(JSONExtractString(labels, 'host_name'))\nFROM signoz_metrics.time_series_v2\nWHERE not has(JSONExtractKeys(labels), 'k8s_node_name')", "selectedValue": "", "showALLOption": false, "sort": "DISABLED", "textboxValue": "", "type": "QUERY" } }, "widgets": [ { "description": "", "id": "959dab82-07ef-45fb-8889-9c79b0a5735d", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{state}}", "name": "A", "query": "system_memory_usage{host_name="{{.hostname}}",state=~"buffered|cached|free|used"}" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Memory Usage", "yAxisUnit": "bytes" }, { "description": "", "id": "84adebba-baf9-455a-b742-b0c23c27a6cc", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{state}}", "name": "A", "query": "avg by(state) (irate(system_cpu_time{host_name="{{.hostname}}",state!="idle"}[5m]))" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "CPU Utilisation", "yAxisUnit": "percentunit" }, { "description": "", "id": "115b6abf-eaa5-4d89-a117-abefb755a8aa", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{device}}", "name": "A", "query": "system_filesystem_usage{host_name="{{.hostname}}",state="used",device!~"/dev/loop.", device!~"tmpfs|nsfs"}" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Used Diskspace", "yAxisUnit": "bytes" }, { "description": "", "id": "7ac947df-7394-4dcb-9fe0-05ee45f23794", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{device}}", "name": "A", "query": "system_filesystem_usage{host_name="{{.hostname}}",state="free",device!~"/dev/loop.", device!~"tmpfs | nsfs"}" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Avaiable Disk", "yAxisUnit": "bytes" }, { "description": "", "id": "c99de411-fcf6-475c-a246-f8ac3e2f2b10", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{state}}", "name": "A", "query": "avg by(state) (irate(system_cpu_time{host_name="{{.hostname}}",state="idle"}[5m]))" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "CPU Idle", "yAxisUnit": "percentunit" }, { "description": "", "id": "18fa7157-0081-4348-b633-26cfe65ccba8", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{direction}}", "name": "A", "query": "avg by(direction) (irate(system_network_io{host_name="{{.hostname}}"}[5m]))" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Total Network IO", "yAxisUnit": "binBps" }, { "description": "", "id": "e55a1b9c-dfb1-4b5a-b203-f1966a3a0cc5", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{device}}-{{direction}}", "name": "A", "query": "irate(system_network_io{host_name="{{.hostname}}"}[5m])" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Independent Network IO", "yAxisUnit": "binBps" }, { "description": "", "id": "13031601-b6d4-47c8-ab81-b64c28b8defd", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{device}}-{{direction}}", "name": "A", "query": "irate(system_disk_io{host_name="{{.hostname}}",device!~"loop.", device!~"tmpfs | nsfs"}[5m])" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Independent Disk IO", "yAxisUnit": "binBps" }, { "description": "", "id": "7643eb3f-2dd6-4a21-803e-516e853f92e3", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{direction}}", "name": "A", "query": "avg by(direction) (irate(system_disk_io{host_name="{{.hostname}}",device!~"loop.", device!~"tmpfs|nsfs"}[5m]))" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Total Disk IO ", "yAxisUnit": "binBps" }, { "description": "", "id": "fb03ba5a-adb4-42fd-a082-adec2af1770e", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "1m-average", "name": "A", "query": "system_cpu_load_average_1m{host_name="{{.hostname}}"}" }, { "disabled": false, "legend": "5m-average", "name": "B", "query": "system_cpu_load_average_5m{host_name="{{.hostname}}"}" }, { "disabled": false, "legend": "15m-average", "name": "C", "query": "system_cpu_load_average_15m{host_name="{{.hostname}}"}" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Average CPU Load", "yAxisUnit": "none" }, { "description": "", "id": "bfd7825c-c9bc-4e7b-891b-1225eece07d8", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{device}}-{{state}}", "name": "A", "query": "system_filesystem_usage{host_name="{{.hostname}}",device!~"/dev/loop.", device!~"tmpfs | nsfs"}" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Independent File System Usage", "yAxisUnit": "bytes" }, { "description": "", "id": "ba153238-e3b2-4107-adb0-03c1ae1af905", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{state}}", "name": "A", "query": "sum by(state) (system_filesystem_usage{host_name="{{.hostname}}",device!~"/dev/loop.", device!~"tmpfs | nsfs"})" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Total File System Usage", "yAxisUnit": "bytes" }, { "description": "", "id": "d52bf781-af94-4a7e-b70d-816522065801", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{direction}}", "name": "A", "query": "avg by(direction) (irate(system_disk_operations{host_name="{{.hostname}}",device!~"loop.",device!~"tmpfs|nsfs"}[5m]))" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Total Disk Operations", "yAxisUnit": "ops" }, { "description": "", "id": "ea994cb5-a911-4d49-8d60-440b66e78c2f", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "value", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "", "name": "A", "query": "up{job_name=~"otel-collector"}" } ], "queryType": "promql" }, "queryData": { "data": { "queryData": [ { "legend": "", "metric": { "name": "up", "job_name": "otel-collector" }, "queryName": "A", "values": [[1685017435, "1"]] }, { "legend": "", "metric": { "name": "up", "job_name": "otel-collector-metrics" }, "queryName": "A", "values": [[1685017435, "1"]] } ] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Agent Up", "yAxisUnit": "bool" }, { "description": "The average queue length of the requests that were issued to the device. It was previously known as Disk I/Os Weighted.\nUnit: aqu-sq - dimensionless (number of queued operations)", "id": "b9459168-fe63-4c58-b6a9-4d47accfa8ea", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{device}}", "name": "A", "query": "irate(system_disk_weighted_io_time{host_name="{{.hostname}}",device!~"loop.", device!~"tmpfs|nsfs"}[5m])" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Average Queue Size (aqu-sz)", "yAxisUnit": "none" }, { "description": "", "id": "315f1b8d-4ca4-4795-9335-42190bd1ab57", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "value", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "", "name": "A", "query": "sum by(host_name) (system_filesystem_usage{host_name="{{.hostname}}",state="used",device!~"/dev/loop.", device!~"tmpfs|nsfs"}) / sum by(host_name) (system_filesystem_usage{host_name="{{.hostname}}",device!~"/dev/loop.", device!~"tmpfs|nsfs"})" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "File System Usage", "yAxisUnit": "percentunit" }, { "description": "", "id": "a762f563-81a2-41a7-b85e-d9e8d5b8cac9", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "value", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "system_memory_usage", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "", "name": "A", "query": "sum by(host_name) (system_memory_usage{host_name="{{.hostname}}",state="used"}) / sum by(host_name) (system_memory_usage{host_name="{{.hostname}}"})" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Memory Usage", "yAxisUnit": "percentunit" }, { "description": "", "id": "9da0e5b3-5a56-4619-92ce-2b43fb9af844", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "value", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "", "name": "A", "query": "1 - (avg by(host_name) (irate(system_cpu_time{host_name="{{.hostname}}",state="idle"}[5m])))" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "CPU Usage", "yAxisUnit": "percentunit" }, { "description": "", "id": "0d371069-67b9-49e5-8a73-a55568390f81", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "value", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "", "name": "A", "query": "avg by(host_name) (irate(system_disk_io{host_name="{{.hostname}}",direction="read",device!~"loop.", device!~"tmpfs|nsfs"}[5m]))" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Disk IO (read)", "yAxisUnit": "binBps" }, { "description": "", "id": "1d79cd03-e79d-44e4-9016-6396b7d3ab26", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "value", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "", "name": "A", "query": "avg by(host_name) (irate(system_disk_io{host_name="{{.hostname}}", direction="write", device!~"loop.", device!~"tmpfs|nsfs"}[5m]))" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Disk IO (write)", "yAxisUnit": "binBps" }, { "description": "", "id": "96529349-b3fb-481f-82db-75e75cf20af1", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{state}}", "name": "A", "query": "sum by(host_name, state) (system_filesystem_inodes_usage{host_name="{{.hostname}}",device!~"/dev/loop.",device!~"tmpfs|nsfs"})" }, { "disabled": false, "legend": "", "name": "B", "query": "" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Total Inode Usage", "yAxisUnit": "none" }, { "description": "", "id": "69bad098-ea78-46a1-81b2-6eb7b54b9b75", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{device}}-{{state}}", "name": "A", "query": "system_filesystem_inodes_usage{host_name="{{.hostname}}",device!~"/dev/loop.",device!~"tmpfs|nsfs"}" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Independent Inode Usage", "yAxisUnit": "none" }, { "description": "", "id": "b637ca7e-a03a-4b49-9344-6406ee66d313", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "value", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "", "name": "A", "query": "sum by(host_name) (system_filesystem_inodes_usage{host_name="{{.hostname}}",state="used",device!~"/dev/loop.",device!~"tmpfs|nsfs"}) / sum by(host_name) (system_filesystem_inodes_usage{host_name="{{.hostname}}",device!~"/dev/loop.",device!~"tmpfs|nsfs"})" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Inode Usage", "yAxisUnit": "percentunit" }, { "description": "", "id": "16ddaf59-bad7-4559-96c2-c8c3eb4f9cd9", "isStacked": false, "nullZeroValues": "zero", "opacity": "1", "panelTypes": "graph", "query": { "builder": { "queryData": [ { "aggregateAttribute": { "dataType": "float64", "isColumn": true, "key": "", "type": "" }, "aggregateOperator": "noop", "dataSource": "metrics", "disabled": false, "expression": "A", "filters": { "items": [], "op": "AND" }, "groupBy": [], "having": [], "legend": "", "limit": 0, "offset": 0, "orderBy": [], "pageSize": 0, "queryName": "A", "reduceTo": "last", "stepInterval": 60 } ], "queryFormulas": [] }, "clickhouse_sql": [ { "disabled": false, "legend": "", "name": "A", "rawQuery": "" } ], "promql": [ { "disabled": false, "legend": "{{device}}-{{direction}}", "name": "A", "query": "irate(system_disk_operations{host_name="{{.hostname}}",device!~"loop.",device!~"tmpfs|nsfs"}[5m])" } ], "queryType": "promql" }, "queryData": { "data": { "legend": "", "query": "", "queryData": [] }, "error": false, "errorMessage": "", "loading": false }, "timePreferance": "GLOBAL_TIME", "title": "Independent Disk Operations", "yAxisUnit": "ops" } ] }
-```
-
-Now, we will open the SigNoz UI and in the **Dashboards** section, on the top right corner, there is a " **\+ New Dashboard** " button and then " **Import JSON** " option from the dropdown menu, we will paste the `JSON` code.
-
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1707720321813/4ef88748-4dfe-489d-a0ee-64f85b6713db.png align="center")
-
-Then, " **Load JSON** "
-
-### Applications Part
-
-It's empty for now as we have not done the application's part. Let's proceed there.
-
-In application's server, we need to setup the OTel Collector as an agent.
-
-Follow the below commands -
-
-```plaintext
-$ wget https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.79.0/otelcol-contrib_0.79.0_linux_amd64.deb
-```
-
-```plaintext
-$ wget https://raw.githubusercontent.com/SigNoz/benchmark/main/docker/standalone/config.yaml
-```
-
-In the above config.yml file we need to provide the signoz server's ip address to send the host metrics and for this signoz will listen to port 4317.
-
-```plaintext
-    exporters:
-	   otlp:
-	     endpoint: "<SIGNOZ_IP_ADD>:4317"
-	     tls:
-	       insecure: true
-```
-
-Now, the application is sending the metrics to signoz and we can check our application's metrics details in the dashboard.
-
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1707720960735/d645273d-3336-4af2-af46-bc0708257709.png align="center")
-
-We've successfully set up the **SigNoz** server and configured our application to send Docker **logs** and host **metrics** to it.
+We've successfully set up the **SigNoz** server and configured our application to send Docker **logs** to it.
 
 ---
 
