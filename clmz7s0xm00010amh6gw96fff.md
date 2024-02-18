@@ -12,13 +12,13 @@ tags: deployment, devops, strategies
 
 Deployment strategies are like smooth operators of the tech world. They help us introduce cool new stuff to our apps without messing things up for users.
 
-The key? Picking the right strategy **saves** **money**, **minimizes** **risk**, and makes our apps work even **better**.
+The key? Picking the right strategy **savesmoney**, **minimizesrisk**, and makes our apps work even **better**.
 
 It's like a secret sauce for hassle-free updates!
 
 ## Types of Deployment Strategies
 
-*Whether it's traditional physical servers, virtual machines, containers, or cloud-based resources, deployment strategies are versatile tools to manage updates and new features efficiently. To make the understanding easier, I'll refer to* ***pods*** *as* ***servers***. So, you can tailor deployment strategies to suit your specific server environment, making them applicable across the board.
+*Whether it's traditional physical servers, virtual machines, containers, or cloud-based resources, deployment strategies are versatile tools to manage updates and new features efficiently. To make the understanding easier, I'll refer to****pods****as****servers***. So, you can tailor deployment strategies to suit your specific server environment, making them applicable across the board.
 
 ### All at Once/Recreate Deployment
 
@@ -67,7 +67,7 @@ It's like a secret sauce for hassle-free updates!
 
 **On Failure**: To perform a **Rollback** in the Recreate strategy, you create a new deployment with the previous version of your application and scale down the current deployment to zero replicas.
 
-> ***Rollback*** *is a process that allows you to revert to a previous version of your application when issues or unexpected problems arise with the new version.*
+> ***Rollback****is a process that allows you to revert to a previous version of your application when issues or unexpected problems arise with the new version.*
 
 ### Ramped/Rolling Update Deployment
 
@@ -287,4 +287,6 @@ The right strategy can make all the difference. Whether you're going with blue-g
 
 ---
 
-Thank you!
+Thank you!🖤
+
+Poonam Pawar — [**LinkedIn**](https://www.linkedin.com/in/poonampawar7/)
