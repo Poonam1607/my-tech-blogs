@@ -9,7 +9,7 @@ tags: opensource, monitoring, devops, logging, signoz, monitoring-tool
 
 ---
 
-## Why Monitoring Tool?
+## Why Monitoring Tools❔
 
 It is a tedious task to go inside the server every time to check the logs, metrics, health and performance, etc.
 
@@ -17,7 +17,7 @@ Monitoring tools are essential for managing and maintaining the health and perfo
 
 So using tools can save a lot of time and effort.
 
-## Monitoring Tools
+## Monitoring Tools🔎
 
 There are plenty of the monitoring tools available for us to use. Following are the list of quite famous and most used tools .
 
@@ -36,7 +36,7 @@ There are plenty of the monitoring tools available for us to use. Following are 
 7. Nagios
     
 
-## Why SigNoz?
+## Why SigNoz?👁️
 
 Before choosing this, we tried **ELK** and noticed some parameters which is tough to manage, like
 
@@ -77,7 +77,7 @@ Let's see the SigNoz architecture first
 * **Frontend**: The user interface, built in ReactJS and TypeScript.
     
 
-## Architecture
+## Architecture🏛️
 
 End-to-end flow for logs configuration.
 
@@ -306,7 +306,7 @@ Now run `$ docker compose -f docker/clickhouse-setup/docker-compose.yaml up -d` 
 
 With just two commands, SigNoz is **up** and **running**. We can access the dashboard at `http://<IP-ADDRESS>:3301/`.
 
-## Logs Configuration
+## Logs Configuration🐬
 
 ### SigNoz Part
 
