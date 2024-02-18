@@ -4,7 +4,7 @@ datePublished: Mon Feb 12 2024 08:06:30 GMT+0000 (Coordinated Universal Time)
 cuid: clsinhi37000208jq3eu27dp9
 slug: signoz-a-complete-setup-tour-with-logs
 cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1708003533812/baa666c1-cfcd-4ad6-8083-3efd07d34e88.png
-ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1707725159302/82d144e2-ca1e-4a9e-998d-bf249801e3a9.png
+ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1708259595592/7133fb38-9f8c-473b-a8a3-9f48588fe70e.png
 tags: opensource, monitoring, devops, logging, signoz, monitoring-tool
 
 ---
