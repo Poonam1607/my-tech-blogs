@@ -38,7 +38,7 @@ There are plenty of the monitoring tools available for us to use. Following are 
 
 ## Why SigNoz?
 
-Before choosing this, I tried **ELK** and I noticed some parameters which is tough to manage, like
+Before choosing this, we tried **ELK** and noticed some parameters which is tough to manage, like
 
 * complete setup requires four components to successfully run elk (**Elasticsearch, Logstash, Kibana & Filebeat**).
     
