@@ -71,7 +71,7 @@ You can find them on **Twitter**, **Discord**, and **Slack** social platforms.
 
 ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1683811761932/927967d1-7d21-45ba-994c-c555dbf30d5e.png align="left")
 
-Always **introduce** **yourself** by describing what you are learning and currently working on so that other folks can know and interact with you.
+Always **introduceyourself** by describing what you are learning and currently working on so that other folks can know and interact with you.
 
 ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1683812406557/fb19f549-85e0-47df-bc11-d1896a74bf66.png align="center")
 
@@ -99,7 +99,7 @@ Yes, like right now!🤯 Follow the steps with me:
     
     %[https://github.com/EddieHubCommunity/hacktoberfest-practice] 
     
-    In this repo, we just have to add our name and **GitHub** **profile** URL to the list as a contribution.
+    In this repo, we just have to add our name and **GitHubprofile** URL to the list as a contribution.
     
 2. Now it's very important to go through the **README.md** section and follow the guidelines in order to start contributing.
     
@@ -131,7 +131,7 @@ Yes, like right now!🤯 Follow the steps with me:
     
     And the 2nd thing is to make changes directly on the **GitHub UI** which we will be doing in this learning. Although it is not recommended to do so for big projects, but this one is specifically made for demo purpose contribution so that anyone can learn easily.
     
-6. Now on the left corner, there is a grey button called `main` which indicates that currently you are in the **main** **branch**. And for best practices, it is recommended to make changes always in a new branch.
+6. Now on the left corner, there is a grey button called `main` which indicates that currently you are in the **mainbranch**. And for best practices, it is recommended to make changes always in a new branch.
     
 7. So on the drop-down section give the name of the branch as per your choice, basically depends on what changes you're doing so we will give here `nameAdd` as the **new branch** name. And then click on the `Create branch: nameAdd`.
     
@@ -227,3 +227,5 @@ In conclusion, open-source projects offer numerous benefits, including skill dev
 ---
 
 Thank you!🖤
+
+Poonam Pawar — [**LinkedIn**](https://www.linkedin.com/in/poonampawar7/)
