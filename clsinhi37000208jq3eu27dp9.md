@@ -5,13 +5,64 @@ cuid: clsinhi37000208jq3eu27dp9
 slug: signoz-a-complete-setup-tour-with-logs
 cover: https://cdn.hashnode.com/res/hashnode/image/upload/v1708003533812/baa666c1-cfcd-4ad6-8083-3efd07d34e88.png
 ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1707725159302/82d144e2-ca1e-4a9e-998d-bf249801e3a9.png
-tags: opensource, monitoring, logging, signoz, monitoring-tool
+tags: opensource, monitoring, devops, logging, signoz, monitoring-tool
 
 ---
 
+## Why Monitoring Tool?
+
+It is a tedious task to go inside the server every time to check the logs, metrics, health and performance, etc.
+
+Monitoring tools are essential for managing and maintaining the health and performance of our projects, especially as their number grows. We can have a **centralised visibility, proactive issue detection, performance optimization, troubleshooting & debugging** and many more.
+
+So using tools can save a lot of time and effort.
+
+## Monitoring Tools
+
+There are plenty of the monitoring tools available for us to use. Following are the list of quite famous and most used tools .
+
+1. ELK
+    
+2. Grafana
+    
+3. Datadog
+    
+4. New Relic
+    
+5. Dynatrace
+    
+6. Zabbix
+    
+7. Nagios
+    
+
+## Why SigNoz?
+
+Before choosing this, I tried **ELK** and I noticed some parameters which is tough to manage, like
+
+* complete setup requires four components to successfully run elk (**Elasticsearch, Logstash, Kibana & Filebeat**).
+    
+* running four components also leads to **increase in cost** of the overall server.
+    
+* we have to invest the resources in operating and maintaining a production-grade ELK stack which makes it hard to manage at scale.
+    
+* So, signoz solves all these major problems quite smoothly.
+    
+
+SigNoz, a **lightweight** monitoring tool having all the important telemetry signals under a **single dashboard** leads to less operational overhead.
+
+**Prometheus** is focused specifically on **time-series metrics**. SigNoz is using **OpenTelemetry** which supports metrics, traces, and logs all together.
+
+**Grafana** offers the **LGTM** stack (Loki for logs, Grafana for visualization, Tempo for traces, and Mimir for metrics). You need to configure and maintain multiple configurations for a full-stack observability setup.  
+Whereas SigNoz provides logs, metrics and traces under a single pane of glass.
+
+**Loki** doesn’t perform well if you want to index and query high-cardinality data. SigNoz uses **ClickHouse** - a fast open source distributed columnar database.
+
+And if you go with **non open source** tools like **New Relic** ,**Datadog**, you will notice a similar kind of problems of getting huge amounts to pay and you end up paying thousands. It contains **no self-hosting**, **no OpenTelemetry visualisation** option. Where signoz does.
+
 ## Overview
 
-In this blog we will be going on hands-on journey, setting up Docker logs collection for enhanced monitoring.
+This is the **part-1** of the series where we will be going on hands-on journey, setting up **Docker logs** collection for enhanced monitoring.
 
 Let's see the SigNoz architecture first
 
@@ -52,13 +103,13 @@ As we can see, the application is generating a stream of random logs.
 
 Let's configure SigNoz now.
 
-1. I have taken t3.micro as instance type, If you intend to set up SigNoz for your organization, handling logs from 10-15 applications, a t3.medium instance would be more suitable. However, the choice ultimately hinges on the nature of the applications. So choose wisely.
+1. I have taken `t3.micro` as instance type, If you intend to set up SigNoz for your organization, handling logs from 10-15 applications, a `t3.medium` instance would be more suitable. However, the choice ultimately hinges on the nature of the applications. So choose wisely.
     
-2. For now, I'm opening the entire port range, a practice certainly not recommended. This is solely for the demo purpose. We will discuss later about the necessary ports.
+2. For now, I'm opening the entire port range, a practice certainly **not recommended**. This is solely for the demo purpose. We will discuss later about the necessary ports.
     
-3. There are many ways to setup signoz application, but here we're using Docker Standalone method. You can explore all the possible ways [here](https://signoz.io/docs/install/).
+3. There are many ways to setup signoz application, but here we're using **Docker Standalone** method. You can explore all the possible ways [here](https://signoz.io/docs/install/).
     
-4. Don't forget to checkout the prerequisites section!
+4. Don't forget to checkout the **prerequisites** section!
     
 5. Follow the below commands -
     
@@ -68,10 +119,9 @@ Let's configure SigNoz now.
     
     If we look closely to the signoz architecture, we can see there are a lot of services running on it.
     
-6. Don't run docker-compose up for now. First et's break down every service so that we can remove the unwanted ones.
+6. Don't run docker-compose up for now. First let's break down each and every service so that we can remove the unwanted ones.
     
     ```plaintext
-    $ docker compose -f docker/clickhouse-setup/docker-compose.yaml up -d
     $ docker ps
     ```
     
@@ -88,28 +138,25 @@ Let's configure SigNoz now.
     98c7178b4004   jaegertracing/example-hotrod:1.30
     ```
     
-    I have simplified the details for the sake of better vision.  
-      
-    a. signoz/frontend - It serves the user interface accessible via a web browser. So this is necessary.  
-      
-    b. gliderlabs/logspout - This is image takes docker logs and forward to desired destination. In signoz setup, we don't need the signoz logs to be seen in the dashboard, so we can remove this. (You can use if you want)  
-      
-    c. signoz/alertmanager - It handles alerts sent by Prometheus servers and manages their routing and grouping. For now we're not configuring alerts so e're going to remove this.  
-      
-    d. signoz/query-service - It handles incoming queries from users and retrieves relevant data from the underlying data storage.  
-      
-    e. signoz/signoz-otel-collector - This container hosts the OpenTelemetry collector, which collects, processes, and exports telemetry data to Signoz.  
-      
-    f. clickhouse/clickhouse-server - This container runs ClickHouse, an open-source column-oriented database management system. It provides storage and querying capabilities for the monitoring data collected by Signoz.  
-      
-    g. signoz/locust - Locust is commonly used for performance testing, stress testing, and load testing web applications and APIs. We're going to remove this.
+    I have simplified the details for the sake of better vision.
     
-      
-    h. bitnami/zookeeper - It is commonly used for distributed systems and coordination.  
-      
-    i. jaegertracing/example-hotrod - They have added a sample application for demo purpose. We're going to remove this also as we have our own application running.
+    a. `signoz/frontend` - It serves the user interface accessible via a web browser.
     
-7. With just two commands, SigNoz is **up** and **running**. We can access the dashboard at `http://<IP-ADDRESS>:3301/`.
+    b. `gliderlabs/logspout` - This image takes **docker logs** and forward to desired destination. In signoz setup, we don't need the signoz logs to be seen in the dashboard, so we can remove this. (You can use if you want).
+    
+    c. `signoz/alertmanager` - It handles alerts sent by **Prometheus servers** and manages their routing and grouping. For now we're not configuring alerts so we're going to remove this as well.
+    
+    d. `signoz/query-service` - It handles incoming queries from users and retrieves relevant data from the underlying data storage.
+    
+    e. `signoz/signoz-otel-collector` - This container hosts the **OpenTelemetry** collector, which collects, processes, and exports telemetry data to Signoz.
+    
+    f. `signoz/clickhouse-server` - This container runs **ClickHouse**, an open-source column-oriented database management system. It provides storage and querying capabilities for the monitoring data collected by Signoz.
+    
+    g. `signoz/locust` - Locust is commonly used for performance testing, stress testing, and load testing web applications and APIs. We're going to remove this.
+    
+    h. `bitnami/zookeeper` - It is commonly used for distributed systems and coordination.
+    
+    i. `jaegertracing/example-hotrod` - They have added a sample application for demo purpose. We're going to remove this also as we have our own application running.
     
 
 After removing services, our docker-compose file something look like this.
@@ -121,8 +168,6 @@ x-clickhouse-defaults: &clickhouse-defaults
   restart: on-failure
   image: clickhouse/clickhouse-server:24.1.2-alpine
   tty: true
-  depends_on:
-    - zookeeper-1
   logging:
     options:
       max-size: 50m
@@ -154,22 +199,6 @@ x-db-depend: &db-depend
       condition: service_completed_successfully
 
 services:
-
-  zookeeper-1:
-    image: bitnami/zookeeper:3.7.1
-    container_name: signoz-zookeeper-1
-    hostname: zookeeper-1
-    user: root
-    ports:
-      - "2181:2181"
-      - "2888:2888"
-      - "3888:3888"
-    volumes:
-      - ./data/zookeeper-1:/bitnami/zookeeper
-    environment:
-      - ZOO_SERVER_ID=1
-      - ALLOW_ANONYMOUS_LOGIN=yes
-      - ZOO_AUTOPURGE_INTERVAL=1
 
   clickhouse:
     <<: *clickhouse-defaults
@@ -261,7 +290,6 @@ services:
       - DOCKER_MULTI_NODE_CLUSTER=false
       - LOW_CARDINAL_EXCEPTION_GROUPING=false
     ports:
-      - "2255:2255"     # pprof extension
       - "4317:4317" # OTLP gRPC receiver
       - "4318:4318" # OTLP HTTP receiver
     restart: on-failure
@@ -273,6 +301,10 @@ services:
       query-service:
         condition: service_healthy
 ```
+
+Now run `$ docker compose -f docker/clickhouse-setup/docker-compose.yaml up -d` .
+
+With just two commands, SigNoz is **up** and **running**. We can access the dashboard at `http://<IP-ADDRESS>:3301/`.
 
 ## Logs Configuration
 
@@ -326,6 +358,11 @@ We can see our application's details here.
 
 We've successfully set up the **SigNoz** server and configured our application to send Docker **logs** to it.
 
+In the next part we will configure host metrics.  
+Stay tuned!
+
 ---
 
 Thank you!🖤
+
+Poonam Pawar — [**LinkedIn**](https://www.linkedin.com/in/poonampawar7/)
